@@ -39,13 +39,13 @@ stdenv.mkDerivation rec {
   dontBuild = true;
 
   # ln behaves weirdly on Mac, and the `Mathematica` bin does not execute for some reason, so `makeWrapper` is used.
-  # You could probably wrap all bins that way, and might need to give Mathematica the correct PATH.
   # Also: For some reason, `makeBinaryWrapper` doesn't work, despite the fact that the main beneficiary is Darwin...
   installPhase = ''
     mkdir -p $out/bin
-    ln -s $mathematica/Applications/Mathematica.app/Contents/MacOS/** $out/bin
-    rm $out/bin/Mathematica; makeWrapper $mathematica/Applications/Mathematica.app/Contents/MacOS/Mathematica $out/bin/Mathematica
-    ln -s $out/bin/MathKernel $out/bin/math
+    for f in $mathematica/Applications/Mathematica.app/Contents/MacOS/**; do
+      makeWrapper $f $out/bin/`basename $f`
+    done
+    cp $out/bin/MathKernel $out/bin/math
     ln -s $mathematica/Applications $out
 
     cp $mash $out/bin/mash
