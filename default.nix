@@ -6,4 +6,6 @@
   #config = pkgs.config // { allowUnfree = true; };
 
   Mathematica = pkgs.callPackage ./pkgs/mathematica.nix { };
+  # in nixpkgs but not built from source. Keeping for posterity
+  # alt-tab-macos = pkgs.callPackage ./pkgs/alt-tab-macos.nix { };
 }
