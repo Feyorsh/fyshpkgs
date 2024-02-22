@@ -4,26 +4,25 @@
 , requireFile
 , makeWrapper
 , perl
+, undmg
 }:
 stdenv.mkDerivation rec {
   name = "Mathematica";
-  version = "13.3.1";
+  version = "14.0";
 
-  mathematica = requireFile rec {
-    name     = "mathematica-${version}";
+  src = requireFile rec {
+    name = "mathematica-${version}.dmg";
     url = "https://account.wolfram.com/dl/Mathematica?version=${version}&platform=Mac&includesDocumentation=false";
     hashMode = "recursive";
-    sha256 = "0rgf80iwm7cpknx2j2x3hadihzgswn8k3igi3bsrh3jkr61c3nr1";
-    message  = ''
-        ${name} cannot be installed automatically (ain't Darwin fun?).
-        Please go to ${url} to download the installer yourself, and install Mathematica.app.
-        Then, add Mathematica to the store like so:
+    sha256 = "07rmvrx57kf0hmki5bj2pj40w5g8lnjigpdp1z3xlfgyva27hraz";
+    message = ''
+        ${name} cannot be installed automatically.
+        Please go to ${url} to download the installer yourself, and add it to the store like so:
 
-        mkdir -p ${name}/Applications
-        mv Mathematica.app ${name}/Applications
-        nix-store --add-fixed --recursive sha256 ${name}
+        mv M-OSX-*.dmg ${name}
+        nix-store --query --hash \$(nix-store --add-fixed --recursive sha256 ${name})
         rm -rf ${name}
-      '';
+    '';
   };
 
   mash = fetchurl {
@@ -31,22 +30,24 @@ stdenv.mkDerivation rec {
     sha256 = "xU1Q3TPJDsFhdGFKchHHYC6/HkV1Y4+wPqHthq3Zx4Q=";
   };
 
-  nativeBuildInputs = [ makeWrapper ];
+  nativeBuildInputs = [ makeWrapper undmg ];
   buildInputs = [ perl ];
 
-  dontUnpack = true;
-  dontConfigure = true;
-  dontBuild = true;
+  sourceRoot = ".";
 
-  # ln behaves weirdly on Mac, and the `Mathematica` bin does not execute for some reason, so `makeWrapper` is used.
-  # Also: For some reason, `makeBinaryWrapper` doesn't work, despite the fact that the main beneficiary is Darwin...
+  # makeBianryWrapper supposedly doesn't work. idk man
   installPhase = ''
+    runHook preInstall
+
+    mkdir -p $out/Applications
+    cp -r *.app $out/Applications
+
+
     mkdir -p $out/bin
-    for f in $mathematica/Applications/Mathematica.app/Contents/MacOS/**; do
+    for f in $out/Applications/Mathematica.app/Contents/MacOS/**; do
       makeWrapper $f $out/bin/`basename $f`
     done
     cp $out/bin/MathKernel $out/bin/math
-    ln -s $mathematica/Applications $out
 
     cp $mash $out/bin/mash
     chmod +x $out/bin/mash
@@ -54,6 +55,8 @@ stdenv.mkDerivation rec {
                                     --replace '  "/usr/local/bin/math",''\n' "" \
                                     --replace '  "/Applications/Mathematica.app/Contents/MacOS/MathKernel",''\n' "" \
                                     --replace '"/Applications/Mathematica Home Edition.app/Contents/MacOS/MathKernel",' '"'"$out"'/bin/MathKernel"'
+
+    runHook postInstall
   '';
 
   meta = with lib; {
@@ -61,7 +64,6 @@ stdenv.mkDerivation rec {
     homepage = "http://www.wolfram.com/mathematica/";
     license = licenses.unfree;
     sourceProvenance = with sourceTypes; [ binaryNativeCode ];
-    maintainers = with maintainers; [ herberteuler ];
-    platforms = [ "aarch64-darwin" "x86_64-darwin" ];
+    platforms = platforms.darwin;
   };
 }
