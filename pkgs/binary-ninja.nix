@@ -7,18 +7,17 @@
 
 stdenv.mkDerivation {
   pname = "binja";
-  version = "3.5";
+  version = "4.0";
 
   src = requireFile rec {
-    name = "BinaryNinja-personal.dmg";
-    hashMode = "recursive";
-    sha256 = "1daznkcjq403jv33zr9y87c38y9xqn44x5r8ihh2vjh0z0hp66z8";
+    name = "BinaryNinja-personal-dev.dmg";
+    sha256 = "1f74m0p300gyvrm2rqbf8iqfipvwdya11v2ynav0f33k0k24zmkr";
     message = ''
         Binary Ninja is proprietary software and requires a license to install.
         (Alternatively, a demo version can be installed from https://cdn.binary.ninja/installers/BinaryNinja-demo.dmg.)
         Please override this derivation with the appropriate installer file and sha256 after adding it to the Nix store like so:
 
-        nix-store --query --hash \$(nix-store --add-fixed --recursive sha256 ${name})
+        nix-prefetch-url file://\$PWD/${name}
         rm -rf ${name}
     '';
   };

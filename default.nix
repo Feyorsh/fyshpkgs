@@ -5,7 +5,7 @@
   overlays = import ./overlays; # nixpkgs overlays
   #config = pkgs.config // { allowUnfree = true; };
 
-  Mathematica = pkgs.callPackage ./pkgs/mathematica.nix { };
+  mathematica = pkgs.callPackage ./pkgs/mathematica.nix { };
   time-out-macos = pkgs.callPackage ./pkgs/time-out.nix { };
   binja = pkgs.callPackage ./pkgs/binary-ninja.nix { };
   # in nixpkgs but not built from source. Keeping for posterity

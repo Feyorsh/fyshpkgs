@@ -7,20 +7,19 @@
 , undmg
 }:
 stdenv.mkDerivation rec {
-  name = "Mathematica";
+  pname = "mathematica";
   version = "14.0";
 
   src = requireFile rec {
     name = "mathematica-${version}.dmg";
     url = "https://account.wolfram.com/dl/Mathematica?version=${version}&platform=Mac&includesDocumentation=false";
-    hashMode = "recursive";
-    sha256 = "07rmvrx57kf0hmki5bj2pj40w5g8lnjigpdp1z3xlfgyva27hraz";
+    sha256 = "14rhf2qpd62xam6wg92swg7k3y2wxg5l1n0qirsqmb3ra5v3gxd7";
     message = ''
         ${name} cannot be installed automatically.
         Please go to ${url} to download the installer yourself, and add it to the store like so:
 
         mv M-OSX-*.dmg ${name}
-        nix-store --query --hash \$(nix-store --add-fixed --recursive sha256 ${name})
+        nix-prefetch-url file://\$PWD/${name}
         rm -rf ${name}
     '';
   };
