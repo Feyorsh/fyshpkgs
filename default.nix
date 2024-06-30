@@ -10,6 +10,7 @@ with pkgs; {
   keycastr = callPackage ./pkgs/keycastr.nix { };
   zotero = callPackage ./pkgs/zotero.nix { };
   binja = callPackage ./pkgs/binary-ninja.nix { };
+  obs-studio = callPackage ./pkgs/obs-studio.nix { };
   cudaPackages = {
     nsight_systems = callPackage ./pkgs/nsight-systems.nix { };
     nsight_compute = callPackage ./pkgs/nsight-compute.nix { };
