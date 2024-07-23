@@ -3,18 +3,33 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    flake-compat = {
+      url = "github:edolstra/flake-compat";
+      flake = false;
+    };
+    flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs }:
-    let
-      systems = [ "x86_64-darwin" "aarch64-darwin" ];
-      forAllSystems = f: nixpkgs.lib.genAttrs systems (system: f system);
-    in
-    {
-      legacyPackages = forAllSystems (system: import ./default.nix {
-        pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
+  outputs = inputs @ { self, nixpkgs, flake-utils, ... }:
+    flake-utils.lib.eachSystem [ "aarch64-darwin" ] (system:
+      let
+        inherit (nixpkgs) lib;
+        pkgs = import nixpkgs {
+          inherit system;
+          overlays = [ self.overlay.${system} ];
+          config = {
+            allowUnfree = true;
+          };
+        };
+      in {
+        overlay = import ./pkgs;
+
+        legacyPackages = pkgs;
+
+        devShells.default = with pkgs; mkShell {
+          packages = [
+            hello
+          ];
+        };
       });
-      packages = forAllSystems (system: nixpkgs.lib.filterAttrs (_: v: nixpkgs.lib.isDerivation v) self.legacyPackages.${system});
-      overlay = import ./overlays;
-    };
 }

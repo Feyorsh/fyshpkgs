@@ -1,3 +1,0 @@
-{
-  gdb = import ./gdb.nix;
-}

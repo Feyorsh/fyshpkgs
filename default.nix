@@ -1,20 +1,15 @@
-{ pkgs ? import <nixpkgs> { } }:
-with pkgs; {
-  #lib = import ./lib { inherit pkgs; }; # functions
-  #modules = import ./modules; # NixOS modules
-  overlays = import ./overlays; # nixpkgs overlays
-  #config = config // { allowUnfree = true; };
-
-  mathematica = callPackage ./pkgs/mathematica.nix { };
-  time-out-macos = callPackage ./pkgs/time-out.nix { };
-  keycastr = callPackage ./pkgs/keycastr.nix { };
-  zotero = callPackage ./pkgs/zotero.nix { };
-  binja = callPackage ./pkgs/binary-ninja.nix { };
-  obs-studio = callPackage ./pkgs/obs-studio.nix { };
-  cudaPackages = {
-    nsight_systems = callPackage ./pkgs/nsight-systems.nix { };
-    nsight_compute = callPackage ./pkgs/nsight-compute.nix { };
+# A function so that this can be imported like nixpkgs by various update scripts and nixpkgs-hammering.
+{ }:
+let
+  lock = builtins.fromJSON (builtins.readFile ./flake.lock);
+  flake-compat = fetchTarball {
+    url = "https://github.com/edolstra/flake-compat/archive/${lock.nodes.flake-compat.locked.rev}.tar.gz";
+    sha256 = lock.nodes.flake-compat.locked.narHash;
   };
-  # in nixpkgs but not built from source. Keeping for posterity
-  # alt-tab-macos = pkgs.callPackage ./pkgs/alt-tab-macos.nix { };
-}
+  self = import flake-compat {
+    src =  ./.;
+  };
+  packages = self.defaultNix.outputs.legacyPackages.${builtins.currentSystem};
+in
+packages
+// self.defaultNix
