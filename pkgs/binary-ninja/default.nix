@@ -21,43 +21,40 @@ let
       rm -rf ${n}
     '';
   in lib.attrsets.recursiveUpdate rec {
-    aarch64-darwin = let
-      name = "binaryninja_personal_macosx.dmg";
-      message = msg name;
-    in {
-      dev.src = requireFile {
-        inherit name message;
+    aarch64-darwin = {
+      dev.src = requireFile rec {
+        name = "binaryninja_personal_dev_macosx.dmg";
+        message = msg name;
         sha256 = "sha256-qj80ruPcJlNBD70X/9VrqHiO+iChZnFZPeNJatnnP5A=";
       };
-      stable.src = requireFile {
-        inherit name message;
+      stable.src = requireFile rec {
+        name = "binaryninja_personal_macosx.dmg";
+        message = msg name;
         sha256 = "sha256-J2QGEXsOsVVRiGw17tH7FJpSxx8oaOf3OO8UBW36WCg=";
       };
     };
     x86_64-darwin = aarch64-darwin;
-    aarch64-linux = let
-      name = "binaryninja_personal_linux-arm.zip";
-      message = msg name;
-    in {
-      dev.src = requireFile {
-        inherit name message;
+    aarch64-linux = {
+      dev.src = requireFile rec {
+        name = "binaryninja_personal_dev_linux-arm.zip";
+        message = msg name;
         sha256 = "sha256-VCUuCavXB2gPVAQfyznvnzuGOC4ycW1gFFE1L9Zt/7g=";
       };
-      stable.src = requireFile {
-        inherit name message;
+      stable.src = requireFile rec {
+        name = "binaryninja_personal_linux-arm.zip";
+        message = msg name;
         sha256 = "sha256-dwvp5+dvSwg6p2f48q1v3T3dviR2WKhJBaf2JUAvSb8=";
       };
     };
-    x86_64-linux = let
-      name = "binaryninja_personal_linux.zip";
-      message = msg name;
-    in {
-      dev.src = requireFile {
-        inherit name message;
+    x86_64-linux = {
+      dev.src = requireFile rec {
+        name = "binaryninja_personal_dev_linux.zip";
+        message = msg name;
         sha256 = "sha256-Ad8/B4EOMVozV1qDQFSmE+HB19PDgpemqbkivI11/FA=";
       };
-      stable.src = requireFile {
-        inherit name message;
+      stable.src = requireFile rec {
+        name = "binaryninja_personal_linux.zip";
+        message = msg name;
         sha256 = "sha256-UV6kosbrJzefIrnC1q/GOYon1WN20wcfc9XxkggwDFQ=";
       };
     };
@@ -94,8 +91,7 @@ in stdenv.mkDerivation {
   '';
 
   # If you only want to update your platform, remove "-a".
-  # Updating dev channel for another system is kinda pointless after all...
-  passthru.updateScript = [ ./update.py system releaseChannel "-a" ];
+  passthru.updateScript = [ ./update.py system releaseChannel (lib.optionalString (!dev) "-a") ];
 
   meta = with lib; {
     description = "A modern reverse engineering platform with a scriptable and extensible decompiler.";
