@@ -8,17 +8,17 @@
 }:
 stdenv.mkDerivation rec {
   pname = "mathematica";
-  version = "14.0";
+  version = "14.1";
 
   src = requireFile rec {
     name = "mathematica-${version}.dmg";
     url = "https://account.wolfram.com/dl/Mathematica?version=${version}&platform=Mac&includesDocumentation=false";
-    sha256 = "14rhf2qpd62xam6wg92swg7k3y2wxg5l1n0qirsqmb3ra5v3gxd7";
+    sha256 = "0jg5mn9wvfxqhp3dn9kszhbl26smzscfgf98m01zzs10y22aynl8";
     message = ''
         ${name} cannot be installed automatically.
-        Please go to ${url} to download the installer yourself, and add it to the store like so:
+        Please go to ${url}, download and run the installer, and add the application to the store like so:
 
-        mv M-OSX-*.dmg ${name}
+        mv W-OSX-*.dmg ${name}
         nix-prefetch-url file://\$PWD/${name}
         rm -rf ${name}
     '';
@@ -41,9 +41,8 @@ stdenv.mkDerivation rec {
     mkdir -p $out/Applications
     cp -r *.app $out/Applications
 
-
     mkdir -p $out/bin
-    for f in $out/Applications/Mathematica.app/Contents/MacOS/**; do
+    for f in $out/Applications/Wolfram.app/Contents/MacOS/**; do
       makeWrapper $f $out/bin/`basename $f`
     done
     cp $out/bin/MathKernel $out/bin/math
