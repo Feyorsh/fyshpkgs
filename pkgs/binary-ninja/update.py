@@ -47,10 +47,12 @@ log(f"Found version {version}...")
 log(f"Requesting Binary Ninja download for user {email_address}...")
 _ = requests.get("https://master.binary.ninja/recover/", params = {"email": email_address, "dev": channel == "dev"}).raise_for_status()
 
-RETRY = 3 # be sure to tweak the query date range if you change this
+RETRY = 5 # be sure to tweak the query date range if you change this
 for _ in range(RETRY):
     time.sleep(60)
-    _ = run("mbsync -a")
+    try:
+        _ = run("mbsync -a")
+    except: pass
     try:
         mail_file = run('mu find date:5M.. and from:licenses@vector35.com and subject:"Binary Ninja License" -n 1 --sortfield=date --reverse --fields=l')
     except: pass

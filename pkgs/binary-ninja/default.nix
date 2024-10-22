@@ -25,7 +25,7 @@ let
       dev.src = requireFile rec {
         name = "binaryninja_personal_dev_macosx.dmg";
         message = msg name;
-        sha256 = "sha256-qj80ruPcJlNBD70X/9VrqHiO+iChZnFZPeNJatnnP5A=";
+        sha256 = "sha256-+IzWWo4kEBN11ptPV31toHgA/vyn67yevCWVJXgEKHE=";
       };
       stable.src = requireFile rec {
         name = "binaryninja_personal_macosx.dmg";
@@ -61,7 +61,7 @@ let
   } {
     # HACK: update-source-version does a stupid grep, so `version-key` needs to match literally
     # Versions are tracked separately to avoid having to update every single platform if you don't want to
-    aarch64-darwin.dev.version = "4.2.5777-dev";
+    aarch64-darwin.dev.version = "4.2.6253-dev";
     aarch64-darwin.stable.version = "4.1.5747";
     aarch64-linux.dev.version = "4.2.5777-dev";
     aarch64-linux.stable.version = "4.1.5747";
@@ -85,7 +85,8 @@ in stdenv.mkDerivation {
     cp -r *.app $out/Applications
 
     mkdir $out/bin
-    makeWrapper $out/Applications/Binary\ Ninja.app/Contents/MacOS/binaryninja $out/bin/binja
+    makeWrapper $out/Applications/Binary\ Ninja.app/Contents/MacOS/binaryninja $out/bin/binaryninja --inherit-argv0
+    ln -s $out/bin/binaryninja $out/bin/binja
 
     runHook postInstall
   '';
