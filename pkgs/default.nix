@@ -17,4 +17,13 @@ final: prev: {
       '';
     });
   };
+
+  makeOpenWrapper = prev.makeSetupHook {
+    name = "make-open-wrapper-hook";
+    # propagatedBuildInputs = [ dieHook ];
+
+    substitutions = {
+      shell = if final.targetPackages ? stdenvNoCC.shell then final.targetPackages.stdenvNoCC.shell else throw "makeOpenWrapper must be in nativeBuildInputs";
+    };
+  } ./hooks/make-open-wrapper.sh;
 }
