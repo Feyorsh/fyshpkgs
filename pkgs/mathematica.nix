@@ -45,7 +45,8 @@ stdenv.mkDerivation rec {
     for f in $out/Applications/Wolfram.app/Contents/MacOS/**; do
       makeWrapper $f $out/bin/`basename $f`
     done
-    cp $out/bin/MathKernel $out/bin/math
+    ln -s $out/bin/MathKernel $out/bin/math
+    ln -s $out/bin/WolframNB $out/bin/mathematica
 
     cp $mash $out/bin/mash
     chmod +x $out/bin/mash
