@@ -3,11 +3,21 @@
 , requireFile
 , makeWrapper
 , writers
+, writeShellScript
 , python3
 , unzip
 }:
 let
   patcher = writers.writePython3 "patch.py" { doCheck = false; } (builtins.readFile ./patch.py);
+  # IDA will crash at runtime without python configured... there is unfortunately no good way to do this at build time.
+  ensureIdaPy = writeShellScript "ensure-idareg.sh" ''
+    config="''${IDAUSR:=''$HOME/.idapro}"
+    if [[ ! -e "$config"/ida.reg ]]; then
+      echo "Creating IDA Pro config "$config"/ida.reg..."
+      mkdir -p "$config"
+      "$1"/idapyswitch --force-path ${lib.getLib python3}/Library/Frameworks/Python.framework/Versions/${lib.versions.majorMinor python3.version}/lib/libpython${lib.versions.majorMinor python3.version}.dylib
+    fi
+  '';
 in
 stdenv.mkDerivation rec {
   pname = "ida-pro";
@@ -41,8 +51,6 @@ stdenv.mkDerivation rec {
 
     cd $IDADIR/*.app/Contents/MacOS
 
-    ./idapyswitch --force-path ${lib.getLib python3}/Library/Frameworks/Python.framework/Versions/${lib.versions.majorMinor python3.version}/lib/libpython${lib.versions.majorMinor python3.version}.dylib
-
     ${patcher}
     for f in *.patched; do
       mv $f ''${f%.patched}
@@ -52,7 +60,8 @@ stdenv.mkDerivation rec {
     rm plugins/arm_mac_user64.dylib
 
     for bin in ida64 idat64; do
-      makeWrapper $IDADIR/*.app/Contents/MacOS/$bin $out/bin/$bin
+      makeWrapper $IDADIR/*.app/Contents/MacOS/$bin $out/bin/$bin \
+        --run "${ensureIdaPy} $IDADIR/*.app/Contents/MacOS"
     done
 
     runHook postInstall
