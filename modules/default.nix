@@ -1,0 +1,3 @@
+{
+  ccache = import ./ccache.nix;
+}

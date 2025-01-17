@@ -31,5 +31,7 @@
             hello
           ];
         };
-      });
+      }) // {
+        darwinModules = import ./modules;
+      };
 }
