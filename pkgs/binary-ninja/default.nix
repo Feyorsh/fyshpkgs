@@ -30,7 +30,7 @@ let
       stable.src = requireFile rec {
         name = "binaryninja_personal_macosx.dmg";
         message = msg name;
-        sha256 = "sha256-J2QGEXsOsVVRiGw17tH7FJpSxx8oaOf3OO8UBW36WCg=";
+        hash = "sha256-Yjm0HTdmsdW3tUt/UmSQYD/6tylJT5Qryb9Yj9mzH64=";
       };
     };
     x86_64-darwin = aarch64-darwin;
@@ -62,7 +62,7 @@ let
     # HACK: update-source-version does a stupid grep, so `version-key` needs to match literally
     # Versions are tracked separately to avoid having to update every single platform if you don't want to
     aarch64-darwin.dev.version = "4.2.6253-dev";
-    aarch64-darwin.stable.version = "4.1.5747";
+    aarch64-darwin.stable.version = "4.2.6455";
     aarch64-linux.dev.version = "4.2.5777-dev";
     aarch64-linux.stable.version = "4.1.5747";
     x86_64-linux.dev.version = "4.2.5777-dev";
