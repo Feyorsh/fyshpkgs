@@ -10,11 +10,12 @@ final: prev: {
   binary-ninja = prev.callPackage ./binary-ninja {};
   binary-ninja-dev = prev.callPackage ./binary-ninja { dev = true; };
   ida-pro = prev.callPackage ./ida {
-    python3 = (final.python3.override({ enableFramework = true; })).overrideAttrs(p': {
+    python3 = (final.python3.override{ enableFramework = true; }).overrideAttrs(p': {
       postPatch = (p'.postPatch or "") + ''
         sed -e "s@/bin/cp@cp@g" -i $(grep -lr /bin/cp .)
         sed -e '/frameworkinstallmaclib:/a\	$(MKDIR_P) "$(DESTDIR)$(LIBPL)"' -i Makefile.pre.in
       '';
+      preFixup = "rm -f $out/Library/Frameworks/Python.framework/Versions/3.12/share/man/man1/python.1.gz";
     });
   };
 
