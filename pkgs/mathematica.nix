@@ -8,25 +8,25 @@
 }:
 stdenv.mkDerivation rec {
   pname = "mathematica";
-  version = "14.1";
+  version = "14.2.1";
 
   src = requireFile rec {
     name = "mathematica-${version}.dmg";
     url = "https://account.wolfram.com/dl/Mathematica?version=${version}&platform=Mac&includesDocumentation=false";
-    sha256 = "0jg5mn9wvfxqhp3dn9kszhbl26smzscfgf98m01zzs10y22aynl8";
+    hash = "sha256-lbjIlKpK6cQIjs+Uy5FJcSIkQg7kQo1uIeUUX5RIRqc=";
     message = ''
         ${name} cannot be installed automatically.
         Please go to ${url}, download and run the installer, and add the application to the store like so:
 
         mv W-OSX-*.dmg ${name}
-        nix-prefetch-url file://\$PWD/${name}
+        nix-prefetch-url "file://\$PWD/${name}"
         rm -rf ${name}
     '';
   };
 
   mash = fetchurl {
     url = "https://ai.eecs.umich.edu/people/dreeves/mash/mash.pl";
-    sha256 = "xU1Q3TPJDsFhdGFKchHHYC6/HkV1Y4+wPqHthq3Zx4Q=";
+    hash = "sha256-xU1Q3TPJDsFhdGFKchHHYC6/HkV1Y4+wPqHthq3Zx4Q=";
   };
 
   nativeBuildInputs = [ makeWrapper undmg ];
