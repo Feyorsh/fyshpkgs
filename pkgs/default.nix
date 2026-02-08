@@ -1,5 +1,5 @@
 final: prev: {
-  mathematica = prev.callPackage ./mathematica.nix {};
+  mathematica = prev.callPackage ./mathematica {};
   time-out-macos = prev.callPackage ./time-out.nix {};
   keycastr = prev.callPackage ./keycastr.nix {};
   zotero = prev.callPackage ./zotero.nix {};

@@ -1,6 +1,5 @@
 { stdenv
 , lib
-, fetchurl
 , requireFile
 , makeWrapper
 , perl
@@ -24,11 +23,6 @@ stdenv.mkDerivation rec {
     '';
   };
 
-  mash = fetchurl {
-    url = "https://ai.eecs.umich.edu/people/dreeves/mash/mash.pl";
-    hash = "sha256-xU1Q3TPJDsFhdGFKchHHYC6/HkV1Y4+wPqHthq3Zx4Q=";
-  };
-
   nativeBuildInputs = [ makeWrapper undmg ];
   buildInputs = [ perl ];
 
@@ -48,7 +42,7 @@ stdenv.mkDerivation rec {
     ln -s $out/bin/MathKernel $out/bin/math
     ln -s $out/bin/WolframNB $out/bin/mathematica
 
-    cp $mash $out/bin/mash
+    cp ${./mash.pl} $out/bin/mash
     chmod +x $out/bin/mash
     substituteInPlace $out/bin/mash --replace '  "/usr/bin/math",''\n' "" \
                                     --replace '  "/usr/local/bin/math",''\n' "" \
