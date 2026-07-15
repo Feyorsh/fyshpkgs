@@ -1,7 +1,8 @@
-{ lib
-, stdenvNoCC
-, fetchurl
-, unzip
+{
+  lib,
+  stdenvNoCC,
+  fetchurl,
+  unzip,
 }:
 
 stdenvNoCC.mkDerivation rec {
@@ -11,7 +12,7 @@ stdenvNoCC.mkDerivation rec {
   src = fetchurl {
     #inherit version;
     url = "https://www.dejal.com/download/?prod=timeout&vers=${version}&lang=en&op=getnow&ref=timeout";
-    hash = "sha256-1bwWXupIZOPol7WiVLlLFHwSR9dPQC7XY0AbZthzrws=";
+    hash = "sha256-ZIVM9uXJFnKR1rV2+b+XV4FbGSuMQL0kOjRS8jSQx3Q=";
     name = "timeout-${version}.zip";
   };
 
