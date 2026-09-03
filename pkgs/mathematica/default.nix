@@ -7,12 +7,12 @@
 }:
 stdenv.mkDerivation rec {
   pname = "mathematica";
-  version = "14.2.1";
+  version = "15.0.1";
 
   src = requireFile rec {
     name = "mathematica-${version}.dmg";
     url = "https://account.wolfram.com/dl/Mathematica?version=${version}&platform=Mac&includesDocumentation=false";
-    hash = "sha256-lbjIlKpK6cQIjs+Uy5FJcSIkQg7kQo1uIeUUX5RIRqc=";
+    hash = "sha256-G7kTDKU+Z5jriXM22igzbm6jvDrihg4X7pfg+c3UYgQ=";
     message = ''
         ${name} cannot be installed automatically.
         Please go to ${url}, download and run the installer, and add the application to the store like so:
